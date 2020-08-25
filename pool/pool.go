@@ -7,6 +7,7 @@ type Pool struct {
 	SetTask, getTask chan Task
 }
 
+// 开始执行任务
 func (p *Pool) Run() {
 	for i := 0; i < p.taskNum; i++ {
 		go p.work()
@@ -16,7 +17,7 @@ func (p *Pool) Run() {
 	}
 }
 
-// 执行工作
+// 执行工作. 内部方法
 func (p *Pool) work() {
 	for t := range p.getTask {
 		t()

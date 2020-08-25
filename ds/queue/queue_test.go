@@ -3,6 +3,7 @@ package queue
 import (
 	"fmt"
 	"testing"
+	"time"
 )
 
 func TestQueue(t *testing.T) {
@@ -11,6 +12,7 @@ func TestQueue(t *testing.T) {
 	fmt.Println(Q.Size())
 
 	for !Q.Empty() {
+		time.Sleep(time.Second * 2)
 		front := Q.Front()
 		Q.Pop()
 		fmt.Println(front)
