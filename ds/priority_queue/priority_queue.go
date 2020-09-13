@@ -9,7 +9,7 @@ func (pq PriorityQueue) Len() int { return len(pq) }
 
 func (pq PriorityQueue) Less(i, j int) bool {
 	// 优先级的定义
-	return pq[i] > pq[j]
+	return pq[i] < pq[j]
 }
 
 func (pq PriorityQueue) Swap(i, j int) {
