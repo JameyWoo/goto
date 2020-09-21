@@ -7,14 +7,15 @@ import (
 
 type Map map[string]int
 
-func (m *Map) Iter() {
+func (m *Map) Iter() error {
 	for key, value := range *m {
 		fmt.Printf("key: %s, value: %d\n", key, value)
 	}
+	return nil
 }
 
 type Iter interface {
-	Iter ()
+	Iter () error
 }
 
 func TestInter(t *testing.T) {
@@ -22,5 +23,5 @@ func TestInter(t *testing.T) {
 	m["hello"] = 1
 	m["world"] = 2
 	m["aaa"] = 3
-	m.Iter()
+	_ = m.Iter()
 }
