@@ -7,8 +7,9 @@ import (
 
 type Map map[string]int
 
-func (m *Map) Iter() error {
-	for key, value := range *m {
+// ? 为什么不能是 (m *Map)
+func (m Map) Iter() error {
+	for key, value := range m {
 		fmt.Printf("key: %s, value: %d\n", key, value)
 	}
 	return nil
@@ -19,9 +20,13 @@ type Iter interface {
 }
 
 func TestInter(t *testing.T) {
+	var I Iter
+
 	m := Map{}
 	m["hello"] = 1
 	m["world"] = 2
 	m["aaa"] = 3
-	_ = m.Iter()
+
+	I = m
+	_ = I.Iter()
 }
