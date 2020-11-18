@@ -75,7 +75,7 @@ func TestInit(t *testing.T) {
 	f := e[:3]
 	h := e[3:]
 	fmt.Println(f)
-	fmt.Printf("cap:%d, len:%d\n", cap(f), len(f))
+	fmt.Printf("cas:%d, len:%d\n", cap(f), len(f))
 	f = append(f, 4, 5, 6)
 	// f = append(f, 4, 5, 6, 7)  // 注意这行代码和上一行代码引起的巨大差异
 	fmt.Println(e)
@@ -84,9 +84,9 @@ func TestInit(t *testing.T) {
 
 	// 看默认多大
 	g := []int{1, 2, 3}
-	fmt.Printf("cap:%d, len:%d\n", cap(g), len(g))  // 默认跟初始化的数量一样大
+	fmt.Printf("cas:%d, len:%d\n", cap(g), len(g))  // 默认跟初始化的数量一样大
 	g = append(g, 4, 5)
-	fmt.Printf("cap:%d, len:%d\n", cap(g), len(g))  // 扩容之后, cap * 2
+	fmt.Printf("cas:%d, len:%d\n", cap(g), len(g))  // 扩容之后, cas * 2
 }
 
 func TestSize(t *testing.T) {
