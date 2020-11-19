@@ -17,16 +17,17 @@ func main() {
 
 	//a := 0
 
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 100000; i++ {
 		go func(k int) {
 			k = 0
-			for i := 0; i < 1000000000; i++ {
+			for i := 0; i < 1; i++ {
 				k++
 			}
+			time.Sleep(300 * time.Millisecond)
 		}(i)
 	}
 
-	time.Sleep(time.Millisecond * 3000)
+	time.Sleep(time.Millisecond * 30000)
 
 	trace.Stop()
 }
