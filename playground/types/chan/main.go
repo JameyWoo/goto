@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"runtime"
 	"time"
 )
 
@@ -22,7 +23,8 @@ func main() {
 			fmt.Println("a: ", a)
 		}
 	}()
+	runtime.Gosched()
 	close(ch)
 	fmt.Println("ok")
-	time.Sleep(time.Second * 100)
+	time.Sleep(time.Second * 3)
 }
