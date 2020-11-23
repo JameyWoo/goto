@@ -27,4 +27,9 @@ func main() {
 	close(ch)
 	fmt.Println("ok")
 	time.Sleep(time.Second * 3)
+	tick := time.NewTicker(1 * time.Second)
+	time.Tick(1 * time.Second)
+	<- tick.C
+
+	time.After(1 * time.Second)
 }
