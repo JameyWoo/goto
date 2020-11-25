@@ -4,9 +4,9 @@
 
 #include "channel.hpp"
 
-void in_test(Chan *chp) {
+void in_test(Chan *chp, int val) {
     // std::this_thread::sleep_for(std::chrono::seconds(1));
-    chp->in(1234567);
+    chp->in(val);
     // std::cout << "in test" << std::endl;
 }
 
@@ -19,17 +19,25 @@ void out_test(Chan *chp) {
 
 int main() {
     Chan chan(0);
-    // chan.out();
-    // chan.in(10);
 
-    std::thread t1([&chan]() {
-        in_test(&chan);
-    });
+    std::thread th1s[10];
+    for (int i = 0; i < 10; i++) {
+        std::cout << "main: th1s: " << i << std::endl;
+        std::thread t1([&chan, &i]() {
+            in_test(&chan, i);
+        });
+    }
 
-    std::thread t2([&chan]() {
-        out_test(&chan);
-    });
+    std::thread th2s[10];
+    for (int i = 0; i < 10; i++) {
+        std::cout << "main: th2s: " << i << std::endl;
+        std::thread t2([&chan]() {
+            out_test(&chan);
+        });
+    }
 
-    t1.join();
-    t2.join();
+    for (int i = 0; i < 10; i++) {
+        th1s[i].join();
+        th2s[i].join();
+    }
 }

@@ -1,6 +1,26 @@
 #include "channel.hpp"
 
-void debug(std::string s);
+Chan::Chan() {
+    init(0, 0, 0, 0);
+}
+
+Chan::Chan(int c) {
+    init(0, c, 0, 0);
+}
+
+void Chan::init(int l, int c, int wc, int iwc) {
+    len = l;
+    cap = c;
+    wait_count = wc;
+    in_wait_count = iwc;
+}
+
+void Chan::debug(std::string s) {
+    std::mutex mu;
+    mu.lock();
+    std::cout << s << std::endl;
+    mu.unlock();
+}
 
 int Chan::out() {
     int val;
@@ -69,11 +89,4 @@ void Chan::in(int in_val) {
         std::cout << "int: I notify!\n";
         out_cv.notify_one();
     }
-}
-
-void debug(std::string s) {
-    std::mutex mu;
-    mu.lock();
-    std::cout << s << std::endl;
-    mu.unlock();
 }
