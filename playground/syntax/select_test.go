@@ -22,3 +22,28 @@ func TestSelectTime(t *testing.T) {
 		fmt.Println("out")
 	}
 }
+
+
+// select既输入也输出
+func TestInOutChan(t *testing.T) {
+	ch := make(chan int, 1)
+
+	for {
+		select {
+		case ch <- 1:
+			fmt.Println("in")
+
+
+		case <- ch:
+			fmt.Println("out")
+		}
+	}
+}
+
+// 测试空select, 会死锁
+func TestEmptySelect(t *testing.T) {
+	select {
+
+	}
+	// OutPut: h
+}

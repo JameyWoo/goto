@@ -30,3 +30,15 @@ func chanInter(i interface{}) {
 
 	i = i.(chan int)
 }
+
+// 测试 var 的chan, 不make是否可以使用
+func TestChanNil(t *testing.T) {
+	var ch chan int
+	//ch := make(chan int)
+	go func() {
+		ch <- 1
+		fmt.Println("in")
+	}()
+	<- ch
+	fmt.Println("over")
+}

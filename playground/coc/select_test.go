@@ -67,3 +67,40 @@ func TestIntMax(t *testing.T) {
 		fmt.Printf("a = %d\n", a)
 	}
 }
+
+// main 永久阻塞测试
+func TestMainBlock(t *testing.T) {
+	go func() {
+		for {
+			fmt.Println("tick")
+			time.Sleep(1 * time.Second)
+		}
+	}()
+	select {}
+}
+
+// 测试如果有chan可执行以及default, 是否一定执行chan, 或者还是随机
+func TestChanDefault(t *testing.T) {
+	for {
+		ch := make(chan int, 1)
+		select {
+		case ch <- 1:
+			fmt.Println(1)
+		default:
+			fmt.Println(2)
+		}
+		time.Sleep(1 * time.Second)
+	}
+}
+
+// 向 close 的chan中写数据的case 测试
+func TestCloseChanWrite(t *testing.T) {
+	ch := make(chan int)
+	close(ch)
+	select {
+	case ch <- 1:
+		fmt.Println("write")
+	default:
+		fmt.Println("Default")
+	}
+}
