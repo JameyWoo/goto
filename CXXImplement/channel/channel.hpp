@@ -21,13 +21,14 @@ class Chan {
     std::queue<int> in_next;
     // 条件变量 + 锁, 控制线程的阻塞与唤醒
     std::mutex mtx;
+    std::mutex rwmtx;
     // 关于in和out的阻塞线程, 需要用两个条件变量表示. 因为只能in唤醒out, out唤醒in
     std::condition_variable in_cv;
     std::condition_variable out_cv;
 
    private:
     // 内部方法
-    void init(int, int, int, int);
+    void init(int, int, int, int, int);
     void debug(std::string s);
 
    public:
