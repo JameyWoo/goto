@@ -2,3 +2,5 @@
 *.exe
 .vscode/
 cmake-build-debug/
+*.out
+*.o
