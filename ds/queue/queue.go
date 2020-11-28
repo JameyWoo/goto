@@ -1,32 +1,33 @@
 /*
-一个简单的 int 类型 queue 实现
+一个简单的 int 类型 Queue 实现
  */
 
 package queue
 
-type queue []int
+type Queue []int
+
 
 // 获取size
-func (q *queue) Size() int {
+func (q *Queue) Size() int {
 	return len(*q)
 }
 
 // 添加元素
-func (q *queue) Push(num ...int) {
+func (q *Queue) Push(num ...int) {
 	*q = append(*q, num...)
 }
 
 // 弹出队首
-func (q *queue) Pop() {
+func (q *Queue) Pop() {
 	*q = (*q)[1:]
 }
 
 // 是否为空
-func (q *queue) Empty() bool {
+func (q *Queue) Empty() bool {
 	return len(*q) == 0
 }
 
 // 获得队首
-func (q *queue) Front() int {
+func (q *Queue) Front() int {
 	return (*q)[0]
 }

@@ -7,39 +7,39 @@ import (
 
 type Stack []int
 
-func (stack *Stack) Push(x ...int) {
-	*stack = append(*stack, x...)
+func (Stack *Stack) Push(x ...int) {
+	*Stack = append(*Stack, x...)
 }
 
-func (stack *Stack) Top() int {
-	if len(*stack) > 0 {
-		return (*stack)[len(*stack) - 1]
+func (Stack *Stack) Top() int {
+	if len(*Stack) > 0 {
+		return (*Stack)[len(*Stack) - 1]
 	} else {
 		panic(0)
 		return 0
 	}
 }
 
-func (stack *Stack) Pop() error {
-	if len(*stack) > 0 {
-		*stack = (*stack)[:len(*stack)-1]
+func (Stack *Stack) Pop() error {
+	if len(*Stack) > 0 {
+		*Stack = (*Stack)[:len(*Stack)-1]
 		return nil
 	} else {
 		return errors.New("Error: Stack is empty")
 	}
 }
 
-func (stack *Stack) IsEmpty() bool {
-	return len(*stack) == 0
+func (Stack *Stack) IsEmpty() bool {
+	return len(*Stack) == 0
 }
 
-func (stack *Stack) Size() int {
-	return len(*stack)
+func (Stack *Stack) Size() int {
+	return len(*Stack)
 }
 
 // 自低向顶打印栈
-func (stack *Stack) print() {
-	for _, x := range *stack {
+func (Stack *Stack) print() {
+	for _, x := range *Stack {
 		fmt.Printf("%d ", x)
 	}
 	fmt.Println()

@@ -5,28 +5,28 @@ import "sync"
 type inter interface {}
 
 // 要有 Insert, Delete, Find, Size 方法
-type set struct {
+type Set struct {
 	m map[interface{}]bool
 	sync.RWMutex
 }
 
-func NewSet() *set {
-	return &set{
+func NewSet() *Set {
+	return &Set{
 		m: map[interface{}]bool{},
 	}
 }
 
-func (s *set) Size() int {
+func (s *Set) Size() int {
 	return len(s.m)
 }
 
-func (s *set) Insert(str interface{}) {
+func (s *Set) Insert(str interface{}) {
 	s.Lock()
 	s.m[str] = true
 	s.Unlock()
 }
 
-func (s *set) Delete(str interface{}) {
+func (s *Set) Delete(str interface{}) {
 	s.Lock()
 	if _, ok := s.m[str]; ok {
 		delete(s.m, str)
@@ -34,14 +34,14 @@ func (s *set) Delete(str interface{}) {
 	s.Unlock()
 }
 
-func (s *set) Find(str interface{}) bool {
+func (s *Set) Find(str interface{}) bool {
 	s.RLock()
 	defer s.RUnlock()
 	return s.m[str]
 }
 
 // 迭代器, 获取所有的key
-func (s *set) Iter() []interface{} {
+func (s *Set) Iter() []interface{} {
 	var iter []interface{}
 	for x, _ := range s.m {
 		iter = append(iter, x)
