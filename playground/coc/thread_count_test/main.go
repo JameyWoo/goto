@@ -1,6 +1,9 @@
 package main
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 /*
 测试线程数量
@@ -14,6 +17,7 @@ func main() {
 	for i := 0; i < 100; i++ {
 		go func() {
 			time.Sleep(5 * time.Second)
+			fmt.Println("i")
 		}()
 	}
 	time.Sleep(8 * time.Second)

@@ -56,3 +56,14 @@ func TestPrintString2(t *testing.T) {
 	test := Test{"hello"}
 	fmt.Println(test)
 }
+
+// 测试 Interface() 方法
+func TestInterfaceMethod(t *testing.T) {
+	var x interface{}
+	x = 10
+	v := reflect.ValueOf(x)
+	y := v.Interface()
+	fmt.Println(y)
+	fmt.Printf("%T\n", y)
+	fmt.Println(reflect.TypeOf(y))
+}
