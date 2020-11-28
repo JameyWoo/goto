@@ -4,18 +4,31 @@ import (
 	"context"
 	"fmt"
 	"math/rand"
+	"time"
 )
 
 func work(ctx context.Context, ch chan int) chan int {
+	ctx2, _ := context.WithTimeout(ctx, 3 * time.Second)
+	go func(ctx context.Context) {
+		for {
+			select {
+			case <- ctx.Done():
+				fmt.Println("timeout or cancel")
+				return
+			}
+		}
+	}(ctx2)
 	for {
 		select {
 		case <- ctx.Done():
 			close(ch)
+			fmt.Println("parent cancel")
 			return nil
 		default:
-			ch <- rand.Int()
-			//fmt.Println("运行一些东西...")
-			//time.Sleep(2 * time.Second)
+			chVal := rand.Int()
+			//ch <- chVal
+			fmt.Println(chVal)
+			time.Sleep(1 * time.Second)
 		}
 	}
 	return nil
@@ -26,9 +39,8 @@ func main() {
 
 	ch := make(chan int)
 	go work(ctx, ch)
-	//time.Sleep(5 * time.Second)
-	fmt.Println(<-ch)
-	fmt.Println(<-ch)
+	time.Sleep(5 * time.Second)
 	cancel()
-	fmt.Println(<-ch)
+
+	time.Sleep(3 * time.Second)
 }
