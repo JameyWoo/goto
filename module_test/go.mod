@@ -9,6 +9,7 @@ require (
 	github.com/JameyWoo/modtest v0.0.0
 	github.com/Jameywoo/modtest/helloworld v0.0.0
 	helloworld v0.0.0
+	//nomod v0.0.0
 )
 
 replace (
@@ -17,4 +18,5 @@ replace (
 	github.com/JameyWoo/modtest v0.0.0 => ../../modtest
 	helloworld v0.0.0 => ./src/helloworld
 	github.com/Jameywoo/modtest/helloworld v0.0.0 => ../../modtest/helloworld
+	//nomod v0.0.0 => ../../modtest/nomod  // 不知道怎么导入一个没有mod的包
 )
