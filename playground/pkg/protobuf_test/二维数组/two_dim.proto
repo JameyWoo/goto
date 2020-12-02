@@ -1,0 +1,14 @@
+syntax = "proto3";
+package main;
+
+// this is a comment
+message Student {
+  string name = 1;
+  bool male = 2;
+  repeated Score s = 3;
+}
+
+//分数
+message Score {
+  repeated int32 score = 3;
+}
