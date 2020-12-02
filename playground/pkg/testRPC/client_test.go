@@ -18,7 +18,7 @@ func TestClient(t *testing.T) {
 
 	client, err := rpc.Dial("tcp", service)
 	// 可以重复  dial， 返回的东西是一样的
-	//client1, err1 := rpc.Dial("tcp", service)
+	//client1, err1 := myrpc.Dial("tcp", service)
 	//fmt.Println(client1)
 	//fmt.Println(err1)
 	//fmt.Println("*****************")

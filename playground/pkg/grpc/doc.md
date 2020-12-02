@@ -21,3 +21,10 @@ E:\go\src\google.golang.org\grpc\internal\status\status.go:130:32: cannot use an
 ```
 
 似乎是这个grpc包的内部出现了错误, 不是我的问题. 但是我觉得很奇怪, 因为不应该. 
+
+
+---
+
+2020-12-2
+
+使用go mod进行包管理, 没有了上面那个错误了.
