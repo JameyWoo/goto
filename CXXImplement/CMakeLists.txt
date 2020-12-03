@@ -4,15 +4,28 @@ project(chan_test)
 set(CMAKE_CXX_STANDARD 14)
 
 add_executable(
-        chan_test
-        channel/chan_test.cpp
-        channel/channel.cpp
+        chan
+        channel/chan.cpp
         channel/channel.hpp
         log/loguru.cpp
         log/loguru.hpp)
 
 target_link_libraries(
-        chan_test
+        chan
+        dl
+        pthread
+)
+
+add_executable(
+        channel_failed
+        channel_failed/chan_test.cpp
+        channel_failed/channel.cpp
+        channel_failed/channel.hpp
+        log/loguru.cpp
+        log/loguru.hpp)
+
+target_link_libraries(
+        channel_failed
         dl
         pthread
 )
@@ -32,14 +45,14 @@ target_link_libraries(
 )
 
 add_executable(
-        bq_test
-        block_queue/test.cpp
+        bq
+        block_queue/bq.cpp
         block_queue/bq.hpp
         log/loguru.cpp
         log/loguru.hpp)
 
 target_link_libraries(
-        bq_test
+        bq
         dl
         pthread
 )

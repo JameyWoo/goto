@@ -20,7 +20,7 @@ void out_test(BoundedBlockingQueue<int> *chp) {
 
 int main() {
     const int chan_cap = 0;
-    const int thread_count = 10;
+    const int thread_count = 100;
 
     BoundedBlockingQueue<int> chan(chan_cap);
 

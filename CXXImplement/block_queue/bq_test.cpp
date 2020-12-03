@@ -63,11 +63,11 @@ void oneToOneTest() {
 void multiToMultiTest() {
     std::cout << "multiToMultiTest start ..." << std::endl;
 
-    BoundedBlockingQueue<int> queueTest(1);
+    BoundedBlockingQueue<int> queueTest(0);
     testVector.clear();
 
     int threads_cnt = 10;
-    int test_size = 20;
+    int test_size = 200;
 
     std::vector<std::thread> putThreads;
     std::vector<std::thread> getThreads;

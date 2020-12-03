@@ -6,6 +6,7 @@
 #include <mutex>
 #include <condition_variable>
 #include <vector>
+#include <queue>
 
 
 /*
@@ -25,6 +26,9 @@ public:
         size_ = 0;
         put_idx_ = 0;
         get_idx_ = 0;
+        wait_get = 0;
+        cnt_get = 0;
+        cnt_put = 0;
     }
 
 
@@ -32,9 +36,29 @@ public:
         // 在unique_lock对象的声明周期内，它所管理的锁对象会一直保持上锁状态
         // unique_lock 具有 lock_guard 的所有功能，而且更为灵活
         std::unique_lock<std::mutex> lck(mutex_);
+        if (capacity_ == 0) {
+            Q.push(x);
+            cnt_put += 1;
+            if (cnt_get > 0) {
+                notEmpty.notify_one();
+                cnt_get -= 1;
+                return;
+            }
+            while (cnt_get > 0) {
+                notFull.wait(std::ref(lck));
+            }
+            // 被唤醒后, 没有阻塞的get了
+            cnt_get -= 1;
+            return;
+        }
         while (size_ == capacity_) {
             // 传 引用
             notFull.wait(std::ref(lck));
+        }
+        if (wait_get > 0) {
+            tmp_val = x;
+            notEmpty.notify_one();
+            return;
         }
         assert(put_idx_ < capacity_ && put_idx_ >= 0);
         queue_[put_idx_] = x;
@@ -53,6 +77,24 @@ public:
 
     T get() {
         std::unique_lock<std::mutex> lck(mutex_);
+        if (capacity_ == 0) {
+            cnt_get += 1;
+            if (cnt_put > 0) {
+                notFull.notify_one();
+                cnt_put -= 1;
+                T tmp = Q.front();
+                Q.pop();
+                return tmp;
+            }
+            while (cnt_put == false) {
+                notEmpty.wait(std::ref(lck));
+            }
+            // 被唤醒后, 没有阻塞的put了
+            cnt_put -= 1;
+            T tmp = Q.front();
+            Q.pop();
+            return tmp;
+        }
         while (size_ == 0) {
             notEmpty.wait(std::ref(lck));
         }
@@ -96,6 +138,12 @@ private:
     std::vector<T> queue_;  // 存储数据
     int put_idx_;  // 放 下一个数据 的索引
     int get_idx_;  // 取 当前数据 的索引
+    int wait_get;  // 当空间为0时, 进行get的数量
+    int wait_put;  // 当空间为0时, 进行put的数量
+    T tmp_val;  // 当空间为0时, get和in进行通信的中间变量
+    std::queue<T> Q;
+    int cnt_get;
+    int cnt_put;
 };
 
 
