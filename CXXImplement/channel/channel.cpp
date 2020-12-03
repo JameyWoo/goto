@@ -16,13 +16,6 @@ void Chan::init(int l, int c, int wc, int iwc, int owc) {
     out_wait_count = owc;
 }
 
-std::mutex mu;
-void Chan::debug(std::string s) {
-    mu.lock();
-    std::cout << s << std::endl;
-    mu.unlock();
-}
-
 int Chan::out() {
     int val;
     if (len == 0) {
@@ -33,29 +26,29 @@ int Chan::out() {
             in_next.pop();
             in_wait_count--;
             // rwmtx.unlock();
-            debug("out: I notify!");
+            LOG_F(INFO, "out: I notify!");
             in_cv.notify_one();
         } else {
             // 如果都没有, 那么才阻塞这个线程
             std::unique_lock<std::mutex> lock(mtx);
-            debug("out: I block!");
+            LOG_F(INFO, "out: I block!");
             out_wait_count++;
             // 调用wait的时候会解锁!
             out_cv.wait(lock);
             // 被唤醒之后, 需要取一个数据. 从Q或者是in_next中
-            debug("out: block ok!");
+            LOG_F(INFO, "out: block ok!");
         }
     } else if (len > 0) {
         val = Q.front();
         Q.pop();
-        debug("out: I notify!");
+        LOG_F(INFO, "out: I notify!");
         in_cv.notify_one();
     }
     return val;
 }
 
 void Chan::in(int in_val) {
-    debug("in start");
+    LOG_F(INFO, "in start");
     // 先判断in wait队列是否有值, 加入到队列中
     // ! 注意加锁
     while (len < cap && in_wait_count > 0) {
@@ -66,7 +59,7 @@ void Chan::in(int in_val) {
         in_wait_count--;
         // rwmtx.unlock();
     }
-    debug("cap = " + std::to_string(cap) + " len = " + std::to_string(len));
+    LOG_F(INFO, "cap = %d len = %d", cap, len);
     // 如果没有缓冲, 则阻塞
     if (cap == len) {
         // rwmtx.lock();
@@ -81,9 +74,9 @@ void Chan::in(int in_val) {
         } else {
             // 阻塞
             std::unique_lock<std::mutex> lock(mtx);
-            debug("in: I block!");
+            LOG_F(INFO, "in: I block!");
             in_cv.wait(lock);
-            debug("out: block ok!");
+            LOG_F(INFO, "out: block ok!");
         }
 
     } else if (len < cap) {  // 如果队列没有满, 则加入到队列中
@@ -93,7 +86,7 @@ void Chan::in(int in_val) {
         Q.push(in_val);
         len++;
         // rwmtx.unlock();
-        debug("in: I notify!");
+        LOG_F(INFO, "in: I notify!");
         out_cv.notify_one();
     }
 }

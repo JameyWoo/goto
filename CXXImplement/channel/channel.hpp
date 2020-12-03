@@ -6,6 +6,8 @@
 #include <mutex>
 #include <queue>
 
+#include "../log/loguru.hpp"
+
 class Chan {
    private:
     int len;
@@ -29,7 +31,6 @@ class Chan {
    private:
     // 内部方法
     void init(int, int, int, int, int);
-    void debug(std::string s);
 
    public:
     // 构造方法

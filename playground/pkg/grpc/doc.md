@@ -28,3 +28,5 @@ E:\go\src\google.golang.org\grpc\internal\status\status.go:130:32: cannot use an
 2020-12-2
 
 使用go mod进行包管理, 没有了上面那个错误了.
+
+测试成功! 分为了三个模块, client, myrpc, server. 其中protobuf生成的代码作为公共模块在myrpc包里. 每个包都通过go mod管理

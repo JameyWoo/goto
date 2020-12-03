@@ -1,27 +1,22 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
+//#include <loguru.hpp>
 
 #include "channel.hpp"
+#include "../log/loguru.hpp"
 
 std::mutex mtx, mtx2;
 
 void in_test(Chan *chp, int val) {
-     std::this_thread::sleep_for(std::chrono::seconds(1));
-//    mtx2.lock();
-//    std::cout << "in: " << val << std::endl;
-//    mtx2.unlock();
+//     std::this_thread::sleep_for(std::chrono::seconds(1));
     chp->in(val);
-    // std::cout << "in test" << std::endl;
 }
 
 void out_test(Chan *chp) {
     // std::this_thread::sleep_for(std::chrono::seconds(1)); //sleep
     int out_val = chp->out();
-    mtx.lock();
-    std::cout << "out: " << out_val << std::endl;
-    mtx.unlock();
-    // std::cout << "out test: " << chp->out() << std::endl;
+    LOG_F(INFO, "out: %d", out_val);
 }
 
 int main() {
