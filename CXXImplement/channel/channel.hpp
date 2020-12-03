@@ -14,15 +14,16 @@
  * */
 
 template<typename T>
-class BoundedBlockingQueue {
+class Chan {
 public:
-    BoundedBlockingQueue();
-    BoundedBlockingQueue(int max_size);
+    Chan();
+    Chan(int max_size);
 
 public:
     void put(const T &x);
     void put(T &&x);
     T get();
+
     bool empty() const;
     bool full() const;
     size_t size() const;
@@ -41,36 +42,37 @@ private:
     std::vector<T> queue_;  // 存储数据
     int put_idx_;  // 放 下一个数据 的索引
     int get_idx_;  // 取 当前数据 的索引
-    int wait_get;  // 当空间为0时, 进行get的数量
-    int wait_put;  // 当空间为0时, 进行put的数量
-    T tmp_val;  // 当空间为0时, get和in进行通信的中间变量
+
+    // 当缓冲为0时存储变量到队列Q中
     std::queue<T> Q;
-    int cnt_get;
-    int cnt_put;
+    int cnt_get;  // 在等待的get的数量
+    int cnt_put;  // 在等待的put的数量
 };
 
-template<typename T>
-BoundedBlockingQueue<T>::BoundedBlockingQueue() : BoundedBlockingQueue(1024) {}
 
 template<typename T>
-BoundedBlockingQueue<T>::BoundedBlockingQueue(int max_size) {
+Chan<T>::Chan() : Chan(1024) {}
+
+template<typename T>
+Chan<T>::Chan(int max_size) {
     capacity_ = max_size;
     queue_.resize(capacity_);
 
     size_ = 0;
     put_idx_ = 0;
     get_idx_ = 0;
-    wait_get = 0;
+
     cnt_get = 0;
     cnt_put = 0;
 }
 
 
 template<typename T>
-void BoundedBlockingQueue<T>::put(const T &x) {
+void Chan<T>::put(const T &x) {
     // 在unique_lock对象的声明周期内，它所管理的锁对象会一直保持上锁状态
     // unique_lock 具有 lock_guard 的所有功能，而且更为灵活
     std::unique_lock<std::mutex> lck(mutex_);
+    // 当缓冲区大小为 0时
     if (capacity_ == 0) {
         Q.push(x);
         cnt_put += 1;
@@ -90,11 +92,6 @@ void BoundedBlockingQueue<T>::put(const T &x) {
         // 传 引用
         notFull.wait(std::ref(lck));
     }
-    if (wait_get > 0) {
-        tmp_val = x;
-        notEmpty.notify_one();
-        return;
-    }
     assert(put_idx_ < capacity_ && put_idx_ >= 0);
     queue_[put_idx_] = x;
     put_idx_++;
@@ -107,13 +104,14 @@ void BoundedBlockingQueue<T>::put(const T &x) {
 }
 
 template<typename T>
-void BoundedBlockingQueue<T>::put(T &&x) {
+void Chan<T>::put(T &&x) {
     put(x);
 }
 
 template<typename T>
-T BoundedBlockingQueue<T>::get() {
+T Chan<T>::get() {
     std::unique_lock<std::mutex> lck(mutex_);
+    // 当缓冲区大小为 0时
     if (capacity_ == 0) {
         cnt_get += 1;
         if (cnt_put > 0) {
@@ -146,22 +144,22 @@ T BoundedBlockingQueue<T>::get() {
 }
 
 template<typename T>
-bool BoundedBlockingQueue<T>::empty() const {
+bool Chan<T>::empty() const {
     return size_ == 0;
 }
 
 template<typename T>
-bool BoundedBlockingQueue<T>::full() const {
+bool Chan<T>::full() const {
     return size_ == capacity_;
 }
 
 template<typename T>
-size_t BoundedBlockingQueue<T>::size() const {
+size_t Chan<T>::size() const {
     return size_;
 }
 
 template<typename T>
-size_t BoundedBlockingQueue<T>::capacity() const {
+size_t Chan<T>::capacity() const {
     return capacity_;
 }
 
