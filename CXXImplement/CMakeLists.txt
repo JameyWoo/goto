@@ -3,7 +3,8 @@ project(chan_test)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(chan_test
+add_executable(
+        chan_test
         channel/chan_test.cpp
         channel/channel.cpp
         channel/channel.hpp

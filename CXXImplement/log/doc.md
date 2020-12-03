@@ -1,3 +1,5 @@
+github: https://github.com/emilk/loguru
+
 ```
 #include <loguru.hpp>
 

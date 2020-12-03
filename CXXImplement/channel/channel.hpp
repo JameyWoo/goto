@@ -19,8 +19,10 @@ class Chan {
    private:
     // 存放chan value的队列
     std::queue<int> Q;
-    // 使用一个vector保存阻塞时进入到chan的值, 作为queue的后续
-    std::queue<int> in_next;
+    // 使用一个queue保存阻塞时进入到chan的值, 作为queue的后续
+    std::queue<int> waitQ;
+    // out取的队列, 从waitQ到outQ
+    std::queue<int> outQ;
     // 条件变量 + 锁, 控制线程的阻塞与唤醒
     std::mutex mtx;
     std::mutex rwmtx;
