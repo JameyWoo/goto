@@ -19,20 +19,22 @@ void Chan::init(int l, int c, int wc, int iwc, int owc) {
 int Chan::out() {
     int val;
     if (Q.size() > 0) {
+        // 注意并发, 要不要加锁?
         val = Q.front();
         Q.pop();
-        LOG_F(INFO, "out: I notify!");
-        in_cv.notify_one();
+        return val;
+//        LOG_F(INFO, "out: I notify!");
+//        in_cv.notify_one();
     } else if (len == 0) {
-        if (in_wait_count > 0) {
+        // 此时有的在等
+        if (waitQ.size() > 0) {
             // 如果队列里没有了值, 检查 阻塞队列
             // rwmtx.lock();
             val = waitQ.front();
             waitQ.pop();
-            in_wait_count--;
-            LOG_F(INFO, "in_wait_count--;");
+            LOG_F(INFO, "waitQ pop");
             // rwmtx.unlock();
-            LOG_F(INFO, "out: I notify as in!");
+            LOG_F(INFO, "out: I notify a in!");
             in_cv.notify_one();
         } else {
             // 如果都没有, 那么才阻塞这个线程
@@ -47,6 +49,7 @@ int Chan::out() {
             // 加锁
             val = outQ.front();
             outQ.pop();
+            lock.unlock();
         }
     }
     return val;
@@ -69,26 +72,27 @@ void Chan::in(int in_val) {
     if (cap == len) {
         // rwmtx.lock();
         // ! 将导致阻塞的值保存在 一个新的队列
-        waitQ.push(in_val);
-        in_wait_count++;
-        LOG_F(INFO, "in_wait_count++");
+//        waitQ.push(in_val);
+//        LOG_F(INFO, "waitQ push");
         // rwmtx.unlock();
-        std::unique_lock<std::mutex> lock(mtx);
         if (out_wait_count > 0) {
             out_wait_count--;
             LOG_F(INFO, "out_wait_count--;");
-            in_wait_count--;
-            LOG_F(INFO, "in_wait_count--;");
+            waitQ.push(in_val);
+            LOG_F(INFO, "waitQ push");
             outQ.push(waitQ.front());
             waitQ.pop();
             out_cv.notify_one();
+            return;
         } else {
+            std::unique_lock<std::mutex> lock(mtx);
             // 阻塞
+            waitQ.push(in_val);
+            LOG_F(INFO, "waitQ push");
             LOG_F(INFO, "in: I block!");
             in_cv.wait(lock);
-            LOG_F(INFO, "out: block ok!");
+            LOG_F(INFO, "in: block ok!");
         }
-
     } else if (len < cap) {  // 如果队列没有满, 则加入到队列中
         // 将value值添加进队列.
         // go中是一个slice实现的队列, C++可以使用stl的队列
