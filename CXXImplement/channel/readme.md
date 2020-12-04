@@ -65,3 +65,14 @@ https://www.zhihu.com/question/31555101/answer/117537944
             阻塞
             out_wait++
 ```
+
+## v1.0
+
+基于生产者消费者队列修改版实现了基本可用的第一版本channel. 
+
+接下来要实现:
+
+- [ ] 组织一下queue, 用STL吧
+- [ ] close逻辑
+- [ ] channel是否可读/可写方法
+- [ ] select方法(可变参数函数)

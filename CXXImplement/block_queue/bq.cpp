@@ -5,8 +5,6 @@
 #include "bq.hpp"
 #include "../log/loguru.hpp"
 
-std::mutex mtx, mtx2;
-
 void in_test(BoundedBlockingQueue<int> *chp, int val) {
 //     std::this_thread::sleep_for(std::chrono::seconds(1));
     chp->put(val);

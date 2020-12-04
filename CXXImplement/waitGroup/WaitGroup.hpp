@@ -16,7 +16,7 @@
 class WaitGroup {
 public:
     WaitGroup();
-    void Add(int delta);
+    void Add(int delta);  // 注意原子增加
     void Done();  // Add(-1);
     void Wait();  // 等待所有线程执行结束
 

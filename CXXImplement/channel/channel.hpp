@@ -10,7 +10,7 @@
 
 
 /*
- * 把生产者与消费者问题的buf 换成队列， 注意要线程安全
+ * 基于支持无缓冲模式的生产者消费者队列实现的channel
  * */
 
 template<typename T>
@@ -20,12 +20,10 @@ public:
     Chan(int max_size);
 
 public:
-    void put(const T &x);
+    void put(const T &x);  // chan T <-   // T 为 typename
     void put(T &&x);
-    T get();
+    T get();  // <- chan T
 
-    bool empty() const;
-    bool full() const;
     size_t size() const;
     size_t capacity() const;
 
@@ -81,17 +79,19 @@ void Chan<T>::put(const T &x) {
             cnt_get -= 1;
             return;
         }
-        while (cnt_get > 0) {
-            notFull.wait(std::ref(lck));
+        while (cnt_get == 0) {
+            notFull.wait(lck);
         }
         // 被唤醒后, 没有阻塞的get了
         cnt_get -= 1;
         return;
     }
+
     while (size_ == capacity_) {
         // 传 引用
         notFull.wait(std::ref(lck));
     }
+
     assert(put_idx_ < capacity_ && put_idx_ >= 0);
     queue_[put_idx_] = x;
     put_idx_++;
@@ -99,8 +99,6 @@ void Chan<T>::put(const T &x) {
     put_idx_ = put_idx_ % capacity_;
     // 告诉消费者可以消费了
     notEmpty.notify_one();
-    // 此时可以解锁
-    lck.unlock();
 }
 
 template<typename T>
@@ -121,7 +119,7 @@ T Chan<T>::get() {
             Q.pop();
             return tmp;
         }
-        while (cnt_put == false) {
+        while (cnt_put == 0) {
             notEmpty.wait(std::ref(lck));
         }
         // 被唤醒后, 没有阻塞的put了
@@ -130,27 +128,19 @@ T Chan<T>::get() {
         Q.pop();
         return tmp;
     }
+
     while (size_ == 0) {
         notEmpty.wait(std::ref(lck));
     }
+
     assert(get_idx_ < capacity_ && get_idx_ >= 0);
     T val = queue_[get_idx_];
     get_idx_++;
     size_--;
     get_idx_ = get_idx_ % capacity_;
     notFull.notify_one();
-    lck.unlock();
+
     return val;
-}
-
-template<typename T>
-bool Chan<T>::empty() const {
-    return size_ == 0;
-}
-
-template<typename T>
-bool Chan<T>::full() const {
-    return size_ == capacity_;
 }
 
 template<typename T>

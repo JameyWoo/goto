@@ -5,8 +5,6 @@
 #include "channel.hpp"
 #include "../log/loguru.hpp"
 
-std::mutex mtx, mtx2;
-
 void in_test(Chan<int> *chp, int val) {
 //     std::this_thread::sleep_for(std::chrono::seconds(1));
     chp->put(val);
@@ -19,8 +17,8 @@ void out_test(Chan<int> *chp) {
 }
 
 int main() {
-    const int chan_cap = 0;
-    const int thread_count = 330;
+    const int chan_cap = 1;
+    const int thread_count = 12;
 
     Chan<int> chan(chan_cap);
 
