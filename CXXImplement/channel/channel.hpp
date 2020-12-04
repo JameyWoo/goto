@@ -51,7 +51,7 @@ private:
 
 
 template<typename T>
-Chan<T>::Chan() : Chan(1024) {}
+Chan<T>::Chan() : Chan(0) {}
 
 template<typename T>
 Chan<T>::Chan(int max_size) {

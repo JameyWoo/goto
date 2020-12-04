@@ -17,6 +17,33 @@ target_link_libraries(
 )
 
 add_executable(
+        chan_time
+        channel/chan_time_test.cpp
+        channel/channel.hpp
+        log/loguru.cpp
+        log/loguru.hpp)
+
+target_link_libraries(
+        chan_time
+        dl
+        pthread
+)
+
+add_executable(
+        waitGroup
+        waitGroup/WaitGroupTest.cpp
+        waitGroup/WaitGroup.hpp
+        log/loguru.cpp
+        log/loguru.hpp
+)
+
+target_link_libraries(
+        waitGroup
+        dl
+        pthread
+)
+
+add_executable(
         channel_failed
         channel_failed/chan_test.cpp
         channel_failed/channel.cpp
