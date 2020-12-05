@@ -1,6 +1,6 @@
 - [ ] 优先队列 (bug)
-- [ ] queue
-- [ ] set
-- [ ] stack
+- [x] queue
+- [x] set
+- [x] stack
 - [ ] 跳表
-- [ ] 布隆过滤器
+- [x] 布隆过滤器
