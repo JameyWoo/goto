@@ -1,7 +1,5 @@
 package priority_queue
 
-import "container/heap"
-
 // 这个结构可以改成 struct, 在实际的应用场景中有不同的应用
 type PriorityQueue []int
 
@@ -12,8 +10,8 @@ func (pq PriorityQueue) Less(i, j int) bool {
 	return pq[i] < pq[j]
 }
 
-func (pq PriorityQueue) Swap(i, j int) {
-	pq[i], pq[j] = pq[j], pq[i]
+func (pq *PriorityQueue) Swap(i, j int) {
+	(*pq)[i], (*pq)[j] = (*pq)[j], (*pq)[i]
 }
 
 func (pq *PriorityQueue) Push(x interface{}) {
@@ -29,7 +27,7 @@ func (pq *PriorityQueue) Pop() interface{} {
 	return item
 }
 
-func (pq *PriorityQueue) update(item *int, priority int) {
-	*item = priority
-	heap.Fix(pq, 0)
-}
+//func (pq *PriorityQueue) update(item *int, priority int) {
+//	*item = priority
+//	heap.Fix(pq, 0)
+//}

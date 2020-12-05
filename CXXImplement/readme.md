@@ -1,7 +1,7 @@
 # C++ 实现的Go特性
 
-- [ ] channel
-- [ ] WaitGroup
+- [x] channel
+- [x] WaitGroup
 - [ ] Context
 - [ ] Mutex
 - [ ] RWMutex

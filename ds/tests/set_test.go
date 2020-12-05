@@ -1,14 +1,15 @@
-package set
+package tests
 
 import (
 	"fmt"
+	"github.com/JameyWoo/goto/ds/set"
 	"log"
 	"testing"
 )
 
 func TestSet(t *testing.T) {
 	// 新建 set
-	s := NewSet()
+	s := set.NewSet()
 	log.Printf("size: %d\n", s.Size())
 
 	s.Insert("Hello")
