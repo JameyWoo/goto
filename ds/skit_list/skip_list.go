@@ -1,5 +1,7 @@
 package skit_list
 
+// https://github.com/GrassInWind2019/skipList
+
 import (
 	"errors"
 	"fmt"
@@ -17,8 +19,8 @@ type SkipListObj interface {
 // 跳表节点
 type Node struct {
 	O        SkipListObj
-	forward  []*Node
-	curLevel int
+	forward  []*Node  // 向前
+	curLevel int  // 当前的级数
 }
 
 // 跳表
@@ -86,7 +88,7 @@ func (s *SkipList) searchInternal(o SkipListObj) (*Node, error) {
 	}
 	p = p.forward[0]
 	if p == nil {
-		return nil, errors.New("No matched object in skip list")
+		return nil, errors.New("no matched object in skip list")
 	} else {
 		return p, nil
 	}
@@ -167,6 +169,7 @@ func (s *SkipList) Traverse() {
 	}
 }
 
+// 插入
 func (s *SkipList) Insert(obj SkipListObj) (bool, error) {
 	v, err := checkSkipListValid(s)
 	if v == false {
@@ -203,6 +206,7 @@ func (s *SkipList) Insert(obj SkipListObj) (bool, error) {
 	return true, nil
 }
 
+// 移除节点
 func (s *SkipList) RemoveNode(obj SkipListObj) (bool, error) {
 	v, err := checkSkipListValid(s)
 	if v == false {
@@ -239,6 +243,7 @@ func (s *SkipList) RemoveNode(obj SkipListObj) (bool, error) {
 	return true, nil
 }
 
+// 清空跳表
 func (s *SkipList) ClearSkipList() error {
 	v, err := checkSkipListValid(s)
 	if v == false {
@@ -256,6 +261,7 @@ func (s *SkipList) ClearSkipList() error {
 	return nil
 }
 
+// 跳表的长度
 func (s *SkipList) LenOfSkipList() (int, error) {
 	v, err := checkSkipListValid(s)
 	if v == false {
@@ -268,9 +274,10 @@ func (s *SkipList) LenOfSkipList() (int, error) {
 	return s.length, nil
 }
 
+// 创建一个跳表, 返回地址
 func CreateSkipList(minObj SkipListObj, args ...int) (*SkipList, error) {
 	if minObj == nil {
-		return nil, errors.New("minObj paramter is null")
+		return nil, errors.New("minObj parameter is null")
 	}
 	var maxlevel, mode int
 	for i, v := range args {
@@ -280,11 +287,11 @@ func CreateSkipList(minObj SkipListObj, args ...int) (*SkipList, error) {
 		case 1:
 			mode = v
 		default:
-			return nil, errors.New("Too many arguments, expect 2 or 3 arguments")
+			return nil, errors.New("too many arguments, expect 2 or 3 arguments")
 		}
 	}
 	if maxlevel <= 0 {
-		return nil, errors.New("Max level of skip list must greater than 0")
+		return nil, errors.New("max level of skip list must greater than 0")
 	}
 
 	s := new(SkipList)
@@ -306,6 +313,7 @@ func CreateSkipList(minObj SkipListObj, args ...int) (*SkipList, error) {
 	return s, nil
 }
 
+// 创建一个新的node级别
 func (s *SkipList) createNewNodeLevel() int {
 	var level int = 0
 
@@ -319,6 +327,7 @@ func (s *SkipList) createNewNodeLevel() int {
 	return level
 }
 
+// 检查跳表是否为 nil
 func checkSkipListValid(s *SkipList) (bool, error) {
 	if s == nil {
 		return false, errors.New("skip list not exist")

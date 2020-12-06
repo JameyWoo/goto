@@ -6,6 +6,10 @@ go的莫名其妙的heap
 不如自己写
  */
 
+/*
+这是一个失败的例子
+ */
+
 import (
 	"container/heap"
 )

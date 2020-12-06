@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// int32 的最大最小值
 const IntMax = int(^uint(0) >> 1)
 const IntMin = ^IntMax
 
@@ -31,6 +32,7 @@ func TestCreateSkipList(t *testing.T) {
 	}
 }
 
+// 这个的索引建立是正常的, 数字
 func TestOperations(t *testing.T) {
 	var minObj, obj myInt
 	minObj = myInt(IntMin)
@@ -66,4 +68,62 @@ func TestOperations(t *testing.T) {
 	}
 	fmt.Println("start print the skip list")
 	s.Traverse()
+}
+
+// 自定义的string类型跳表
+type myString struct {
+	s string
+}
+
+func (a *myString) Compare(b skit_list.SkipListObj) bool {
+	return (*a).s < (*b.(*myString)).s
+}
+
+func (a *myString) PrintObj() {
+	fmt.Print(*a)
+}
+
+func TestStringSkipList(t *testing.T) {
+	sl, err := skit_list.CreateSkipList(&myString{"   "}, 5)  // bixv
+	if err != nil {
+		panic(err)
+	}
+	rand.Seed(time.Now().UnixNano())
+	sl.Insert(&myString{"fuck"})
+	sl.Insert(&myString{"your"})
+	sl.Insert(&myString{"mother"})
+	sl.Insert(&myString{"and"})
+	sl.Insert(&myString{"your"})
+	sl.Insert(&myString{"father"})
+
+	sl.Traverse()
+}
+
+
+// 自定义的string类型跳表
+type myStr string
+
+func (a *myStr) Compare(b skit_list.SkipListObj) bool {
+	return *a < *b.(*myStr)
+}
+
+func (a *myStr) PrintObj() {
+	fmt.Print(*a)
+}
+
+// 建立索引的时候有bug
+// 经常是对整个行都加到了第二个索引上
+func TestStringSkipList1(t *testing.T) {
+	obj := myStr("000")
+	sl, err := skit_list.CreateSkipList(&obj, 10)
+	if err != nil {
+		panic(err)
+	}
+	rand.Seed(time.Now().UnixNano())
+	objs := []myStr{"fuck", "your", "mom", "and", "your", "fa"}
+	for i := 0; i < len(objs); i++ {
+		sl.Insert(&objs[i])
+	}
+
+	sl.Traverse()
 }
