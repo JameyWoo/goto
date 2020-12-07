@@ -52,7 +52,7 @@ func (bf *BloomFilter) Get(s string) bool {
 	return false
 }
 
-// 哈希算法参考: https://developer.aliyun.com/article/252773
+// 哈希算法参考资料: https://developer.aliyun.com/article/252773
 func (bf BloomFilter) SDBMHash(s string) int {
 	h := 0
 	for i := 0; i < len(s); i++ {
