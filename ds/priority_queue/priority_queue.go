@@ -7,14 +7,13 @@ type PQInterface interface {
 
 type PriorityQueue struct {
 	PQInterface
-	nodes []interface{}
 }
 
 func (pq *PriorityQueue) Push(node interface{}) {
-
+	
 }
 
-func (pq *PriorityQueue) Pop(node interface{}) interface{} {
+func (pq *PriorityQueue) Pop() interface{} {
 	return nil
 }
 

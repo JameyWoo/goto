@@ -1,13 +1,8 @@
 package kit
 
-/*
-go的莫名其妙的heap
-不知道怎么实现. 无语...
-不如自己写
- */
 
 /*
-这是一个失败的例子
+原来要调用 heap.Push, heap.Pop
  */
 
 import (

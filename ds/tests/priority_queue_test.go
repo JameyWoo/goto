@@ -6,18 +6,20 @@ import (
 	"testing"
 )
 
-type IntNode int
+type IntNode []int
 
-func (node IntNode) Less(i, j int) bool {
-	return false
+func (node *IntNode) Less(i, j int) bool {
+	return (*node)[i] < (*node)[j]
 }
 
 func TestPQFrame(t *testing.T) {
 	pq := priority_queue.PriorityQueue{}
-	pq.Push(IntNode(2))
-	pq.Push(IntNode(3))
-	pq.Push(IntNode(1))
+	pq.Push(2)
+	pq.Push(3)
+	pq.Push(1)
 
 	x := pq.Top()
 	fmt.Println(x)
+	fmt.Println(pq.Pop())
+	fmt.Println(pq.Top())
 }

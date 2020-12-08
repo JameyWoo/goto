@@ -1,4 +1,4 @@
-package priority_queue_failed
+package priority_queue_standard
 
 // 这个结构可以改成 struct, 在实际的应用场景中有不同的应用
 type PriorityQueue []int
