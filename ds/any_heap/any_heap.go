@@ -5,63 +5,61 @@ import (
 	"log"
 )
 
-type Elem interface {
-	Less(elem interface{}) bool
+type Array interface {
+	Push(interface{})
+	Pop() interface{}
+	Top() interface{}
+	Swap(i, j int)
+	Len() int
+	Less(i, j int) bool
 }
 
-type IntHeap struct {
-	array []Elem
+type AnyHeap struct {
+	Elems Array
 }
 
-func (ip *IntHeap) Push(x Elem) {
-	ip.array = append(ip.array, x)
-	ip.swim(len(ip.array) - 1)
+func (ip *AnyHeap) Push(x interface{}) {
+	ip.Elems.Push(x)
+	ip.swim(ip.Elems.Len() - 1)
 }
 
-func (ip *IntHeap) Pop() (Elem, error) {
-	if len(ip.array) < 1 {
-		//log.Fatal("Error! No element in the Heap!")
+func (ip *AnyHeap) Pop() (interface{}, error) {
+	if ip.Elems.Len() < 1 {
 		return nil, errors.New("no element in the Heap")
 	}
-	top := ip.Top()
-	ip.array[0] = ip.array[len(ip.array)-1]
-	ip.array = ip.array[:len(ip.array)-1]
-	ip.sink(0)
-	return top, nil
+	ip.Elems.Swap(0, ip.Elems.Len() - 1)
+	ip.sink(0, ip.Elems.Len() - 1)
+	return ip.Elems.Pop(), nil
 }
 
-func (ip *IntHeap) Top() Elem {
-	if len(ip.array) < 1 {
+func (ip *AnyHeap) Top() interface{} {
+	if ip.Elems.Len() < 1 {
 		log.Fatal("Error! No element in the Heap!")
 	}
-	return ip.array[0]
+	return ip.Elems.Top()
 }
 
-func (ip *IntHeap) Empty() bool {
-	return len(ip.array) == 0
+func (ip *AnyHeap) Empty() bool {
+	return ip.Elems.Len() == 0
 }
 
-func (ip *IntHeap) swim(idx int) {
-	for idx > 0 && ip.array[idx].Less(&ip.array[(idx-1)/2]) {
-		tmp := ip.array[idx]
-		ip.array[idx] = ip.array[(idx-1)/2]
-		ip.array[(idx-1)/2] = tmp
+func (ip *AnyHeap) swim(idx int) {
+	for idx > 0 && ip.Elems.Less(idx, (idx-1)/2) {
+		ip.Elems.Swap(idx, (idx - 1) / 2)
 		idx = (idx - 1) / 2
 	}
 }
 
-func (ip *IntHeap) sink(idx int) {
-	for idx*2+1 < len(ip.array) || (idx+1)*2 < len(ip.array) {
+func (ip *AnyHeap) sink(idx, n int) {
+	for idx*2+1 < n || (idx+1)*2 < n {
 		tmpIdx := idx
-		if ip.array[idx*2+1].Less(&ip.array[tmpIdx]) {
+		if ip.Elems.Less(idx*2+1, tmpIdx) {
 			tmpIdx = idx*2 + 1
 		}
-		if (idx+1)*2 < len(ip.array) && ip.array[(idx+1)*2].Less(&ip.array[tmpIdx]) {
+		if (idx+1)*2 < n && ip.Elems.Less((idx+1)*2, tmpIdx) {
 			tmpIdx = (idx + 1) * 2
 		}
-		tmp := ip.array[idx]
-		ip.array[idx] = ip.array[tmpIdx]
-		ip.array[tmpIdx] = tmp
+		ip.Elems.Swap(idx, tmpIdx)
 		if idx == tmpIdx {
 			break
 		}
