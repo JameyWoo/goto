@@ -1,7 +1,6 @@
 package bloom_filter
 
 import (
-	"fmt"
 	"github.com/howeyc/crc16"
 )
 
@@ -13,20 +12,31 @@ import (
 => 判断成没有的那么一定是没有; 判断成有的不一定有 (有准确率)
  */
 
+// 所有的哈希函数
+var fs = [...]func(data []byte)uint16 {crc16.ChecksumCCITT, crc16.ChecksumCCITTFalse,
+crc16.ChecksumIBM, crc16.ChecksumMBus, crc16.ChecksumSCSI}
+
+
 type BloomFilter struct {
 	m int  // 布隆过滤器的长度（如比特数组的大小）
 	k int  // 哈希的次数
+	h int  // 使用的hash函数的数量, 默认3个
 	cnt int  // 已经过滤元素的数量
 	array []bool
 }
 
+// 默认的构造函数
 func NewBloomFilter() *BloomFilter {
-	return &BloomFilter{m: 1024, k: 3, array: make([]bool, 1024, 1024)}
+	return &BloomFilter{m: 1024, k: 3, h: 3, array: make([]bool, 1024, 1024)}
+}
+
+// 带有参数的自定义的构造函数
+func NewBloomFilterWithArgs(m, k, h int) *BloomFilter {
+	return &BloomFilter{m: m, k: k, h: h, array: make([]bool, m, m)}
 }
 
 func (bf *BloomFilter) Put(s string) {
-	idx := bf.getHashIdx(s)
-	fmt.Println(idx)
+	idx := bf.GetHashIndex(s)
 
 	for _, i := range idx {
 		bf.array[i] = true
@@ -42,7 +52,7 @@ func (bf *BloomFilter) Put(s string) {
 }
 
 func (bf *BloomFilter) Get(s string) bool {
-	idx := bf.getHashIdx(s)
+	idx := bf.GetHashIndex(s)
 
 	bit := true
 	for _, i := range idx {
@@ -51,14 +61,14 @@ func (bf *BloomFilter) Get(s string) bool {
 	return bit
 }
 
-func (bf BloomFilter) getHashIdx(s string) []int {
-	funcs := []func(data []byte)uint16 {crc16.ChecksumCCITT, crc16.ChecksumCCITTFalse,
-		crc16.ChecksumIBM, crc16.ChecksumMBus, crc16.ChecksumSCSI}
+func (bf BloomFilter) GetHashIndex(s string) []int {
+	funcs := fs[:bf.h]
 
-	idx := make([]int, 5)
+	idx := make([]int, bf.h)
 	for i, fu := range funcs {
 		idx[i] = int(fu([]byte(s))) % bf.m
 	}
+	//log.Println(idx)
 	return idx
 }
 
