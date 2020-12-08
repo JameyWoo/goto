@@ -1,5 +1,10 @@
 package bloom_filter
 
+import (
+	"fmt"
+	"github.com/howeyc/crc16"
+)
+
 /*
 布隆过滤器
 
@@ -20,17 +25,12 @@ func NewBloomFilter() *BloomFilter {
 }
 
 func (bf *BloomFilter) Put(s string) {
-	h1 := bf.SDBMHash(s)
-	h2 := bf.BKDRHash(s)
-	//h3 := bf.RSHash(s)
-	h4 := bf.JSHash(s)
+	idx := bf.getHashIdx(s)
+	fmt.Println(idx)
 
-	//log.Printf("%d, %d, %d, %d\n", h1, h2, h3, h4)
-
-	bf.array[h1] = true
-	bf.array[h2] = true
-	//bf.array[h3] = true
-	bf.array[h4] = true
+	for _, i := range idx {
+		bf.array[i] = true
+	}
 
 	bf.cnt += 1
 
@@ -42,15 +42,28 @@ func (bf *BloomFilter) Put(s string) {
 }
 
 func (bf *BloomFilter) Get(s string) bool {
-	h1 := bf.SDBMHash(s)
-	h2 := bf.BKDRHash(s)
-	//h3 := bf.RSHash(s)
-	h4 := bf.JSHash(s)
-	if bf.array[h1] && bf.array[h2] && bf.array[h4] {
-		return true
+	idx := bf.getHashIdx(s)
+
+	bit := true
+	for _, i := range idx {
+		bit = bit && bf.array[i]
 	}
-	return false
+	return bit
 }
+
+func (bf BloomFilter) getHashIdx(s string) []int {
+	funcs := []func(data []byte)uint16 {crc16.ChecksumCCITT, crc16.ChecksumCCITTFalse,
+		crc16.ChecksumIBM, crc16.ChecksumMBus, crc16.ChecksumSCSI}
+
+	idx := make([]int, 5)
+	for i, fu := range funcs {
+		idx[i] = int(fu([]byte(s))) % bf.m
+	}
+	return idx
+}
+
+/*
+这些hash算法都不好用... 垃圾. 我直接调用 crc16库了
 
 // 哈希算法参考资料: https://developer.aliyun.com/article/252773
 func (bf BloomFilter) SDBMHash(s string) int {
@@ -88,3 +101,4 @@ func (bf BloomFilter) JSHash(s string) int {
 	}
 	return (int(h)& 0x7FFFFFFF) % bf.m
 }
+ */
