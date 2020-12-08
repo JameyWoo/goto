@@ -3,12 +3,12 @@ package tests
 import (
 	"container/heap"
 	"fmt"
-	"github.com/JameyWoo/goto/ds/priority_queue"
+	"github.com/JameyWoo/goto/ds/priority_queue_failed"
 	"testing"
 )
 
 func TestMain0(m *testing.T) {
-	pq := &priority_queue.PriorityQueue{}
+	pq := &priority_queue_failed.PriorityQueue{}
 	pq.Push(4)
 	pq.Push(6)
 	pq.Push(1)

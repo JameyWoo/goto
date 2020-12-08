@@ -1,4 +1,5 @@
 - [ ] 优先队列 (bug)
+- [ ] heap
 - [x] queue
 - [x] set
 - [x] stack
