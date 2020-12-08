@@ -5,3 +5,4 @@
 - [x] stack
 - [ ] 跳表
 - [x] 布隆过滤器
+- [ ] 底层操作数组(pointer, uintptr)
