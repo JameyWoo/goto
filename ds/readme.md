@@ -1,5 +1,6 @@
-- [ ] 优先队列 (bug)
-- [ ] heap
+- [x] 优先队列 (标准库)
+- [x] 优先队列 (自己)
+- [x] heap
 - [x] queue
 - [x] set
 - [x] stack
