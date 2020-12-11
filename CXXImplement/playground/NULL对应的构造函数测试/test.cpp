@@ -12,7 +12,21 @@ public:
         cout << "pointer" << endl;
     }
 };
-
+/*
+ * ! hello
+ * * hello
+ * + hello
+ * ? hello! hello
+ */
+/*
+ * 你好
+ * 我是谁
+ */
+// ! hello
+// + world
+// ? what?
+// * attention
+// TOOD: hello
 int main() {
     Vec v0(0);
 //    Vec v1(NULL);
