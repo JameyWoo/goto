@@ -16,9 +16,12 @@ import (
 	"time"
 )
 
-type MyFormatter struct{}
+type MyFormatter struct{
+	DisableColors bool
+}
 
 func (s *MyFormatter) Format(entry *logrus.Entry) ([]byte, error) {
+	s.DisableColors = false
 	timestamp := time.Now().Local().Format("2006/01/02 15:04:05")
 	fullPath := strings.Split(entry.Caller.File, "/")
 	path := fullPath[len(fullPath) - 1] + ":" + strconv.Itoa(entry.Caller.Line)

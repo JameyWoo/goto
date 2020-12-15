@@ -6,12 +6,12 @@ import (
 )
 
 func main() {
-	db, err := leveldb.OpenFile("db", nil)
+	db, err := leveldb.OpenFile("db0", nil)
 	if err != nil {
 		logrus.Error(err)
 	}
 	defer db.Close()
-	logrus.Info("create db")
+	logrus.Info("create db0")
 
 	db.Put([]byte("bar3"), []byte("foo"), nil)
 	db.Put([]byte("hello3"), []byte("world"), nil)
