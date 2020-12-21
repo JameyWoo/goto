@@ -1,7 +1,8 @@
 .idea/
-*.exe
 .vscode/
+db[0-9]*
 cmake-build-debug/
+
+*.exe
 *.out
 *.o
-db[0-9]*
