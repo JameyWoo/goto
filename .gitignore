@@ -1,6 +1,6 @@
 .idea/
 .vscode/
-db[0-9]*
+db[0-9]*/
 cmake-build-debug/
 
 *.exe
